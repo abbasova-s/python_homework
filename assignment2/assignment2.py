@@ -1,4 +1,5 @@
 import csv
+import traceback
 
 #Task 2: Read a CSV File
 def read_employees():
@@ -168,14 +169,14 @@ def create_minutes_list():
     return result
 
 minutes_list = create_minutes_list()
-print(minutes_list)
+print(minutes_list) 
 
 
 #Task 15: Write Out Sorted List
 def write_sorted_list():
-    minutes_list.sort(key=lambda x: x[1])
+    sorted_list = sorted(minutes_list, key=lambda x: x[1])
 
-    result = list(map(lambda x: (x[0], datetime.strftime(x[1], "%B %d, %Y")), minutes_list))
+    result = list(map(lambda x: (x[0], datetime.strftime(x[1], "%B %d, %Y")), sorted_list))
 
     with open ("./minutes.csv", "w") as csvfile:
         writer = csv.writer(csvfile)
