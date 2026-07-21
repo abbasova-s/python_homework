@@ -1,0 +1,36 @@
+function: func1
+positional parameters: none
+keyword parameters: none
+return: None
+function: func2
+positional parameters: (3,)
+keyword parameters: none
+return: True
+function: func3
+positional parameters: none
+keyword parameters: {'name': 'Alex'}
+return: <function logger_decorator at 0x1042a3110>
+function: func1
+positional parameters: none
+keyword parameters: none
+return: None
+function: func2
+positional parameters: (3,)
+keyword parameters: none
+return: True
+function: func3
+positional parameters: none
+keyword parameters: {'name': 'Alex'}
+return: <function logger_decorator at 0x1002db110>
+function: func1
+positional parameters: none
+keyword parameters: none
+return: None
+function: func2
+positional parameters: (3,)
+keyword parameters: none
+return: True
+function: func3
+positional parameters: none
+keyword parameters: {'name': 'Alex'}
+return: <function logger_decorator at 0x104e4b110>
