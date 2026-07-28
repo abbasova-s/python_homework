@@ -58,41 +58,37 @@ more_employees.info()
 
 
 #Task 4: Data Cleaning
+#1
 dirty_data = pd.read_csv('dirty_data.csv')
 print(dirty_data)
+
 clean_data = dirty_data.copy()
 
-#1
+#2
 clean_data.drop_duplicates(inplace=True)
 print(clean_data)
 
-#2
+#3
 clean_data["Age"] = pd.to_numeric(clean_data["Age"], errors="coerce")
-mean_age = clean_data["Age"].mean()
-clean_data["Age"] = clean_data["Age"].fillna(mean_age)
+clean_data["Age"] = clean_data["Age"].fillna(clean_data["Age"].mean())
 print(clean_data)
 
-#3
+#4
 clean_data["Salary"] = clean_data["Salary"].replace(["unknown", "n/a"], pd.NA)
 clean_data["Salary"] = pd.to_numeric(clean_data["Salary"], errors="coerce")
 print(clean_data)
 
-#4
-median_salary = clean_data["Salary"].median()
-clean_data["Salary"] = clean_data["Salary"].fillna(median_salary)
+#5
+clean_data["Salary"] = clean_data["Salary"].fillna(clean_data["Salary"].median())
 print(clean_data)
 
-#5
+# 6
 clean_data["Hire Date"] = clean_data["Hire Date"].str.strip()
 clean_data["Hire Date"] = pd.to_datetime(clean_data["Hire Date"], format="mixed")
-print(clean_data["Hire Date"].isna().sum())
 print(clean_data)
 
-#6
+#7
 clean_data["Name"] = clean_data["Name"].str.strip().str.upper()
 clean_data["Department"] = clean_data["Department"].str.strip().str.upper()
 
 print(clean_data)
-print(clean_data.isna().sum())
-print(clean_data.shape)
-print(clean_data.dtypes)
