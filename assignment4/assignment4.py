@@ -80,11 +80,18 @@ print(clean_data)
 #4
 median_salary = clean_data["Salary"].median()
 clean_data["Salary"] = clean_data["Salary"].fillna(median_salary)
+print(clean_data)
 
-clean_data["Hire Date"] = pd.to_datetime(clean_data["Hire Date"], format="mixed", errors="coerce")
+#5
+clean_data["Hire Date"] = clean_data["Hire Date"].str.strip()
+clean_data["Hire Date"] = pd.to_datetime(clean_data["Hire Date"], format="mixed")
+print(clean_data)
 
-clean_data["Name"] = clean_data["Name"].str.strip().str.upper()
-clean_data["Department"] = clean_data["Department"].str.strip().str.upper()
+#6
+clean_data["Name"] = clean_data["Name"].str.strip()
+clean_data["Department"] = clean_data["Department"].str.strip()
 
+clean_data["Name"] = clean_data["Name"].str.upper()
+clean_data["Department"] = clean_data["Department"].str.upper()
 
 print(clean_data)
