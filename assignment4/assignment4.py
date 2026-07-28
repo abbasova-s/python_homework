@@ -89,7 +89,10 @@ print(clean_data["Hire Date"].isna().sum())
 print(clean_data)
 
 #6
-clean_data["Name"] = clean_data["Name"].str.strip()
+clean_data["Name"] = clean_data["Name"].str.strip().str.upper()
 clean_data["Department"] = clean_data["Department"].str.strip().str.upper()
 
 print(clean_data)
+print(clean_data.isna().sum())
+print(clean_data.shape)
+print(clean_data.dtypes)
