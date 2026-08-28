@@ -46,7 +46,7 @@ for book in books:
     title = book.find_element(By.CSS_SELECTOR, 'span.title-content').text
 
     # Find author/s
-    authors = "; ".join(author.text for author in book.find_elements(By.CSS_SELECTOR, 'a.author-link'))
+    author = "; ".join(author.text for author in book.find_elements(By.CSS_SELECTOR, 'a.author-link'))
 
     # Find format and year
     format_year = book.find_element(By.CSS_SELECTOR, 'div.cp-format-info span.display-info-primary').text
@@ -54,7 +54,7 @@ for book in books:
     # Create a dictionary
     result = {
         "Title": title,
-        "Author/s": authors,
+        "Author": author,
         "Format-Year": format_year
     }
 
