@@ -1,0 +1,19 @@
+
+1. Which sections of the website are restricted for crawling?
+Disallow: /w/
+Disallow: /api/
+Disallow: /trap/
+Disallow: /wiki/Special:
+Disallow: /wiki/Spezial:
+Disallow: /wiki/Spesial:
+Disallow: /wiki/Special%3A
+Disallow: /wiki/Spezial%3A
+Disallow: /wiki/Spesial%3A
+These are the restrictions under the general User-agent: * section.
+
+
+2. Are there specific rules for certain user agents?
+Yes. There are specific rules for many user agents, such as MJ12bot, Mediapartners-Google*, sitecheck.internetseer.com, Zealbot, MSIECrawler, and others. Some of these user agents are completely disallowed from crawling the website, while SemrushBot has a Crawl-delay of 5 seconds.
+
+3. Reflect on why websites use robots.txt and write 2-3 sentences explaining its purpose and how it promotes ethical scraping
+Robots.txt helps website owners control traffic and regulate which sections of their websites can or cannot be accessed by web crawlers. Web crawlers can scrape large amounts of information and send many requests in a short period of time, which can put unexpected pressure on servers and potentially slow down or disrupt a website. That's why it is important to review a website's robots.txt before scraping and follow its guidelines to promote ethical scraping and avoid causing problems for the website.
