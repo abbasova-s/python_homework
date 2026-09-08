@@ -7,14 +7,14 @@ conn = sqlite3.connect("../db/lesson.db")
 cursor = conn.cursor()
 
 query = """
-SELECT o.order_id, SUM(p.price * li.quantity)
-   FROM orders o
-   JOIN line_items li
-   ON o.order_id = li.order_id
-   JOIN products p
-   ON p.product_id = li.product_id
-   GROUP BY o.order_id
-   ORDER BY o.order_id
+SELECT orders.order_id, SUM(products.price * line_items.quantity)
+   FROM orders
+   JOIN line_items
+   ON orders.order_id = line_items.order_id
+   JOIN products
+   ON products.product_id = line_items.product_id
+   GROUP BY orders.order_id
+   ORDER BY orders.order_id
    LIMIT 5;
 """
 
@@ -34,19 +34,22 @@ conn = sqlite3.connect("../db/lesson.db")
 cursor = conn.cursor()
 
 query = """
-SELECT customers.customer_name, AVG(order_totals.total_price) AS average_total_price
+SELECT customers.customer_id,
+       customers.customer_name,
+       AVG(order_totals.total_price) AS average_total_price
 FROM customers
 LEFT JOIN (
-    SELECT o.customer_id AS customer_id_b, SUM(p.price * li.quantity) AS total_price
+    SELECT o.customer_id AS customer_id_b,
+           SUM(p.price * li.quantity) AS total_price
     FROM orders o
     JOIN line_items li
-    ON o.order_id = li.order_id
+        ON o.order_id = li.order_id
     JOIN products p
-    ON p.product_id = li.product_id
+        ON p.product_id = li.product_id
     GROUP BY o.order_id
 ) AS order_totals
-ON customers.customer_id = order_totals.customer_id_b
-GROUP BY customers.customer_id;
+    ON customers.customer_id = order_totals.customer_id_b
+GROUP BY customers.customer_id, customers.customer_name;
 """
 
 cursor.execute(query)
@@ -61,11 +64,12 @@ conn.close()
 # new order for the customer named Perez and Sons
 
 conn = sqlite3.connect("../db/lesson.db")
+conn.execute("PRAGMA foreign_keys = 1")
 cursor = conn.cursor()
 
 try:
     # Find customer_id
-    customer = conn.execute("""
+    customer = cursor.execute("""
         SELECT customer_id
         FROM customers
         WHERE customer_name= 'Perez and Sons';
@@ -75,7 +79,7 @@ try:
     customer_id = customer[0]
 
     # Find 5 cheapest products
-    products = conn.execute("""
+    products = cursor.execute("""
         SELECT product_id, product_name, price
         FROM products
         ORDER BY price
@@ -84,18 +88,20 @@ try:
     print("Products: ", products)
 
     # Find employee_id
-    employee = conn.execute("""
+    employee = cursor.execute("""
         SELECT employee_id
         FROM employees
-        WHERE first_name = "Miranda"
-        AND last_name = "Harris";    
+        WHERE first_name = 'Miranda'
+        AND last_name = 'Harris';    
     """).fetchone()
 
     print("Employee: ", employee)
     employee_id = employee[0]
 
+    conn.execute("BEGIN")
+
     # Create new order
-    order = conn.execute("""
+    order = cursor.execute("""
         INSERT INTO orders (customer_id, employee_id)
         VALUES (?, ?)
         RETURNING order_id;
@@ -105,7 +111,7 @@ try:
     
     # Add line items to the order
     for product_id, product_name, price in products:
-        conn.execute("""
+        cursor.execute("""
         INSERT INTO line_items (order_id, product_id, quantity)
         VALUES (?, ?, ?);
         """, (order_id, product_id, 10))
@@ -114,14 +120,16 @@ try:
     conn.commit()
     print("Created order:", order_id)
 
-    # Verify the order and line items
-    results = conn.execute("""
-        SELECT li.line_item_id, li.quantity, p.product_name, p.price
-        FROM line_items li
-        JOIN products p
-            ON li.product_id = p.product_id
-        WHERE li.order_id = ?
-        ORDER BY li.line_item_id;
+    # Verify the line items
+    results = cursor.execute("""
+    SELECT li.line_item_id,
+           li.quantity,
+           p.product_name
+    FROM line_items li
+    JOIN products p
+        ON li.product_id = p.product_id
+    WHERE li.order_id = ?
+    ORDER BY li.line_item_id;
     """, (order_id,)).fetchall()
 
     for row in results:
@@ -131,7 +139,8 @@ except Exception as e:
     conn.rollback()
     print("Error: ", e)
 
-conn.close()
+finally:
+    conn.close()
 
 
 # Task 4: Aggregation with HAVING
@@ -141,12 +150,15 @@ conn = sqlite3.connect("../db/lesson.db")
 cursor = conn.cursor()
 
 query = """
-SELECT (e.first_name || ' ' || e.last_name) AS employee_name, COUNT(o.order_id) AS order_total
+SELECT e.employee_id,
+       e.first_name,
+       e.last_name,
+       COUNT(o.order_id) AS order_count
 FROM employees e
 JOIN orders o
 ON e.employee_id = o.employee_id
-GROUP BY e.employee_id
-HAVING COUNT (o.order_id) > 5;
+GROUP BY e.employee_id, e.first_name, e.last_name
+HAVING COUNT(o.order_id) > 5;
 """
 
 cursor.execute(query)
