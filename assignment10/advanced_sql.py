@@ -34,8 +34,7 @@ conn = sqlite3.connect("../db/lesson.db")
 cursor = conn.cursor()
 
 query = """
-SELECT customers.customer_id,
-       customers.customer_name,
+SELECT customers.customer_name,
        AVG(order_totals.total_price) AS average_total_price
 FROM customers
 LEFT JOIN (
@@ -74,8 +73,6 @@ try:
         FROM customers
         WHERE customer_name= 'Perez and Sons';
     """).fetchone()
-
-    print("Customer: ", customer)
     customer_id = customer[0]
 
     # Find 5 cheapest products
@@ -85,7 +82,6 @@ try:
         ORDER BY price
         LIMIT 5;    
     """).fetchall()
-    print("Products: ", products)
 
     # Find employee_id
     employee = cursor.execute("""
@@ -94,10 +90,9 @@ try:
         WHERE first_name = 'Miranda'
         AND last_name = 'Harris';    
     """).fetchone()
-
-    print("Employee: ", employee)
     employee_id = employee[0]
 
+    # Begin transaction
     conn.execute("BEGIN")
 
     # Create new order
@@ -118,7 +113,6 @@ try:
 
     # Commit
     conn.commit()
-    print("Created order:", order_id)
 
     # Verify the line items
     results = cursor.execute("""
